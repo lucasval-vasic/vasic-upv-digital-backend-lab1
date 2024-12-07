@@ -2,7 +2,9 @@
 
 ## Introduction
 
-On this lab we will get familiar with the digital IC implementation flow by looking at the Static Timing Analysis of the Cadence flow: Tempus. During this lab you will get familiar with the TCL language used to create scripts, and then analyze the timing a couple of digital blocks.
+On this lab we will get familiar with the digital IC implementation flow by looking at the Static Timing Analysis of the Cadence flow: Tempus.
+
+During the lab you will get familiar with the TCL language used to create scripts, and then analyze the timing characteristics of a couple of digital blocks.
 
 ## TCL
 
@@ -98,7 +100,7 @@ puts "ten times $x is [ten_time $x]"
 ```
 
 ### Further reading
-[This is a great tutorial](https://wiki.tcl-lang.org/page/Tcl+Tutorial+Lesson+0)
+[This is a great tutorial in case you totally *loved* TCL and want to become a guru.](https://wiki.tcl-lang.org/page/Tcl+Tutorial+Lesson+0)
 
 ## Basic constraints
 
@@ -106,10 +108,17 @@ Before starting with the Tempus lab we will review the first design that we will
 
 [This is a high level overview of the synchronous FIFO.](sync_fifo.md) Please read it through and become familiar with the block.
 
-You can find the RTL code for the FIFO here. TODO
+You can find the RTL code for the FIFO [here](sync_fifo/rtl/sync_fifo.v). It will be useful to also become familiar with it.
 
 ## Tempus introduction
-Now will launch Tempus, the Static Timing Analysis (STA) tool from Cadence. cd into the sync_fifo/sta/run folder of the lab and execute the tempus command:
+
+We will first execute the config_cadence.sh script to add the Cadence tools to the system path:
+
+```console
+> source config_cadence.sh
+```
+
+Now we are ready to launch Tempus, the Static Timing Analysis (STA) tool from Cadence. cd into the sync_fifo/sta/run folder of the lab and execute the tempus command:
 
 ```console
 > cd sync_fifo/sta/run
@@ -120,14 +129,15 @@ If everything went well you should see the Tempus command prompt, composed of th
 
 > tempus 1> _
 
+Notice how Tempus created files on the current run/ folder to log the current run and the commands issued to Tempus. These files may be useful to debug some errors or review the log, especially as the output of some commands may be verbose.
+
 ### First steps
 
-The common way to execute the design flow is by reading TCL scripts with commands. The first script we will see is load_design.tcl. Please open and examine it.
+The common way to execute the design flow is by reading TCL scripts with commands in them. The first script we will see is load_design.tcl. Please open it with an editor and examine it.
 
 You can see that the most important commands are the ones to read the standard cell library and the design netlist:
 
 ```console
-
 ################################
 # Read the libraries
 ################################
@@ -159,18 +169,23 @@ Now we can source (ie execute) the load_design script:
 > source scripts/load_design.tcl
 ```
 
-After a few screens of text we will get the Tempus prompt again, after seeing the design cell count report that will confirm us that the design and libraries were properly loaded.
+After a few screens of text we will get the Tempus prompt again. Seeing the design cell count report that will confirm us that the design and libraries were properly loaded.
+
 Now we can start issuing command to analyze the design timing. Just remember that since we loaded a library with a single corner our timing analysis will limit to the slow corner.
 
 ### Initial timing report
-The quintessential Tempus command is report_timing. This command will report the timing path according to the command arguments. If we add no arguments then the most critical path will be reported. If we try it now:
+The quintessential Tempus command is report_timing. This command  supports several arguments to tailor the scope of the timing report and its format. If we add no arguments then the single most critical path will be reported. Try it now:
 
 ```console
 > report_timing
 ```
-we will get no paths reported since the design is unconstrained: we specified no clocks or timing checks at all! In order to hold our timing constraints we will create a constraints file in sync_fifo/tcons/sync_fifo.sdc. You will be filling up this file, starting with your first constraint command to create a clock. Let's start with a relatively slow 30MHz frequency.
+We will get no paths reported since the design is unconstrained: we specified no clocks or timing checks at all!
 
-After the clock has been created we need to ask Tempus to propagate it, this is: to ensure that the clock signal is distributed across the clock treee and reaches the flops in the design. We do this by appending this command at the end of the SDC file:
+In order to hold our timing constraints we will create a constraints file in sync_fifo/tcons/sync_fifo.sdc. You will be filling up this file, starting with your first constraint command to create a clock. Let's start with a relatively slow 30MHz frequency.
+
+It is strongly suggested to use a TCL variable to hold the clock frequency and then perform a mathematical operation to obtain the clock period for the create_clock constraint.
+
+After the clock has been created we need to ask Tempus to propagate it, this is to ensure that the clock signal is distributed across the clock tree and reaches all the flops in the design. We do this by appending this command at the end of the SDC file:
 
 ```console
 set_propagated_clock [all_clocks]
@@ -182,7 +197,7 @@ Once you have created the clock you can read the SDC file:
 > read_sdc ../../tcons/$BLOCK_NAME.sdc
 ```
 
-Calling up report_timing will trigger a timing update: this is the process in which Tempus takes design data and constraints and performs the timing analysis. A call to report_timing after the constraints have been modified will trigger this timing update. It can also be triggered manually with the update_timing command.
+Calling up report_timing will trigger a timing update. This is the process in which Tempus takes design data and constraints and performs the timing analysis. A call to report_timing after the constraints have been modified will trigger this timing update. It can also be triggered manually with the update_timing command.
 
 If everything went well you should see your first timing report, focusing on the design's critical path. The default report_timing is very complete, but it lacks the full clock path breakdown so let's add it with the -path_type argument:
 
@@ -192,7 +207,9 @@ If everything went well you should see your first timing report, focusing on the
 Now you can examine in detail the timing report. Notice how the slack is computed, by subtracting the data launch and data capture timestamps. As you can see many factors affect the slack computation such as the flop setup time, the clock tree delay, the logical cells delay...
 
 ### Advanced reports
-Let's check out a few options to tweak the report timing output. By default, a single timing path is reported. In order to increase this we can make use of the -max_paths or -nworst arguments to either print a maximum number of paths, or the worst n paths in the design. Combining these options with a path_type argument of "summary" or "end" allows us to print a report in table format to quickly review many paths at once.
+Let's check out a few options to tweak the report timing output. By default, a single timing path is reported. In order to increase this we can make use of the -max_paths or -nworst arguments to either print a maximum number of paths, or the worst n paths in the design.
+
+Combining these options with a path_type argument of "summary" or "end" allows us to print a report in table format to quickly review many paths at once.
 
 As we mentioned above report_timing supports many arguments to customize both the type of timing paths reported and the report layout itself. Please check the man page for it to get a sense of the options supported:
 
@@ -200,12 +217,16 @@ As we mentioned above report_timing supports many arguments to customize both th
 > man report_timing
 ```
 
-Now check out the design netlist, select a specific register and report the timing paths that start and end on it. Use the -from reg_name and -to reg_name arguments to select these paths that start or end on this register.
+Now check out the design netlist in sta/in/sync_fifo.vg, select a specific register and report the timing paths that start and end on it. Check out the manual to find the report_timing arguments to get these reports.
 
-Notice how by default only setup (max delay) paths are reported. Check out the manual to find out how to report hold paths (min delay) and report them. As you can see the slack on these paths is much smaller than on the setup paths since the minimum delay in a design can be very short.
+Notice how by default only setup (max delay) paths are reported. Check out the manual to find out how to report hold paths (min delay) and report them.
+
+As you can see the slack on these paths is much smaller than on the setup paths since the minimum delay in a design can be very short. Although the timing reports for max and min delay are very similar a capital difference is the different value in the "Phase shift" figure used to compute the slack.
 
 ### Violations
 Given that we can see the slack for the design's critical path we can find out the maximum operating frequency for the design. Reduce the clock period, so the clock runs _faster_ than the design would allow and report timing again.
+
+It is a good idea to wrap all the tempus commands we used before to set up libraries, block name and load design in a script of your own since we will be re-running many analysis from now on. 
 
 You should see paths with negative slack, this is, violating paths or violations for the new operating frequency. Tempus provides a convenient way to report all setup check violators:
 
@@ -219,30 +240,38 @@ We can also report any violating path, regardless of the type:
 > report_constraints -all_violators
 ```
 
-This will show many violating paths for min delay check, this is, hold paths. They all start in the FIFO input controls such as the reset port aclr. What is happening? We didn't add any constraints for the IO ports so Tempus assumed they all should experience zero delay with respect to the clock. Now is the time to add these constraints. Set an input delay of 1ns and a load of 0.1pF to each of the pins (except for the clock which will only need a load, not an input delay). Then add an output delay of 1ns and a load of 0.1pF to all output ports. Remember to dial back the clock frequency to the original 30MHz value. Now update timing, report all violators again and confirm that no more violations are reported.
+This will show many violating paths for min delay check, this is, hold paths. They all start in the FIFO input controls such as the reset port aclr. What is happening? We didn't add any constraints for the IO ports so Tempus assumed they all should experience zero delay with respect to the clock.
+
+Now is the time to add these constraints. Set an input delay of 1ns and a load of 0.1pF to each of the pins (except for the clock which will only need a load, not an input delay). Then add an output delay of 1ns and a load of 0.1pF to all output ports.
+
+Remember to dial back the clock frequency to the original 30MHz value. Rerun the analysis and confirm that no more violations are reported.
 
 One last thing for correctness’s sake: asynchronous reset signals such as aclr should not be constrained with a delay relative to a clock. Instead, they should be described as completely asynchronous signals. In SDC this is accomplished setting a false path starting from the aclr port. Modify the tcons file to remove the input delay and set the false path. The violators report should still be clean.
 
+Now that our SDC file is complete we can try an additional constraint: setting a multicycle path. Increase the frequency again and select a specific register to register transfer for which a setup violation is reported. Create a multicycle path constraint of 2 clock periods for setup timing. Report the path and ensure that the violation is gone.
+
 #### Slack histogram
-A useful tool to quickly assess the state of timing on a design is to print out the histogram report. We can do it in Tempus with the report_slack_histogram command. By default, report_slack_histogram only reports violating paths so we should use the -max_slack argument and set an arbitrarily large value like 10,000ns to report all paths:
+A useful tool to quickly assess the overall state of timing on a design is to print out the histogram report. We can do it in Tempus with the report_slack_histogram command. By default, report_slack_histogram only reports violating paths so we should use the -max_slack argument and set an arbitrarily large value like 10,000ns to report all paths:
 
 ```console
-report_slack_histogram -max_slack 1000
+report_slack_histogram -max_slack 10000
 ```
 
 A useful argument is -step where we can set the step size between histogram bins to get a coarse or finely granulated report.
 
 ### ECO preview
-We can use Tempus to preview the effect of small fixed to the design done as part of the ECO flow we discussed on the theory session. In this case we consider very small fixes like resizing or inserting an extra buffer.
+In addition to analyzing a finalized design we can use Tempus to preview the effect of small fixes to the design done as part of the ECO flow we discussed on the theory session. In this case we consider very small fixes like resizing or inserting an extra buffer.
 
 First we will analyze the effect of resizing a buffer. Run the timing analysis clocking the block at a frequency _slightly_ faster than the maximum operating frequency. Now report one of the violating paths and select a candidate buffer to resize (a good candidate is a buffer that currently uses a reduced driving strength like X1 or X2). Make a note of the buffer instance name and use the ecoChangeCell command:
 
 ````console
 > ecoChangeCell -inst instance_name -cell new_cell
 ````
-Now report again the violating path and notice how the slack increased. Don't worry if the path still violates, this is just a simple example.
+Now report again the violating path and notice how the slack increased. Don't worry if the path still violates, this is just a simple example to see the effect of the ECO preview command.
 
-Another possible ECO change is to add a buffer. This is sometimes done to fix hold timing issues where the data path is too fast. Select a candidate flop and make note of the name, then add the buffer (repeater in ECO jargon). You will need to add a new for the newly added buffer, a good practice is to use a prefix like eco_ to clearly distinguish it from the buffers inserted automatically by implementation flow:
+Another possible ECO change is to add a buffer. This is sometimes done to fix hold timing issues where the data path is too fast. Select a candidate flop and make note of the name, then add the buffer (repeater in ECO jargon).
+
+You will need to add a name for the newly added buffer. A good practice is to use a prefix like eco_ to clearly distinguish it from the buffers inserted automatically by implementation flow. This is the syntax for the AddRepeater command:
 
 ```console
 ecoAddRepeater -term reg_name/D -cell new_cell -name new_cell_name
@@ -250,7 +279,7 @@ ecoAddRepeater -term reg_name/D -cell new_cell -name new_cell_name
 
 Rerun the timing analysis and notice how the path delay and slack changed after the ECO command.
 
-As we mentioned this is just a preview of the ECO effects since it assumes that there will be enough spece in the core area to resize or add a cell, and it does not consider signal integrity or routing issues. However it may be useful to assess the effect of edits before commiting them in the PnR tool and rerunning the last steps of flow to perform parasitic extraction and STA again.
+As we mentioned this is just a preview of the ECO effects since it assumes that there will be enough space in the core area to resize or add a cell, and it does not consider signal integrity or routing issues, nor it will update the pararisitic elements. However it may be useful to assess the effect of edits before commiting them in the PnR tool and rerunning the last steps of flow to perform parasitic extraction and STA again.
 
 ### Multi-clock designs
 
@@ -258,86 +287,30 @@ We will now consider a design with multiple clocks: an asynchronous FIFO with se
 
 [This is a high level overview of the asynchronous FIFO.](async_fifo.md) Please read it through and become familiar with the block.
 
-You can find the RTL code for the FIFO here. TODO
+You can find the RTL code for the FIFO [here](async_fifo/rtl/async_fifo.v). Again it would be a good idea to get familiar with it for the next steps.
 
 ### Constraints and design load
 
 Create a new SDC file to add constraints for the FIFO. Set a similar clock frequency on both write and read clocks. Then add IO constraints for the input and output ports, taking into account that each of the IO ports will need to be constrained to the respective write or read clock. You can refer to the RTL code if you're unsure about a specific port.
 
-Once constraints are in place load the design and constraints, and ensure no errors are produced when applying constraints.
+Once constraints are in place load the design and constraints, and ensure no errors are produced when applying the constraints to the design.
 
 #### Timing report
 
-Produce a few timing reports for each of the clock domains. Also report the violations and think about why are they happening.
+Produce a few timing reports for each of the clock domains. Also report the violations and think about why are they happening. Any guesses?
 
 ### Clock domain crossing
 
 The nature of the asynchronous FIFO design creates timing paths that cross the boundaries between write and clock domains. This of course contradicts the ideal synchronous design methodology but is a requisite of the design. Clock Domain Crossing is a discipline on its own that will be taught later in your Masters so we will not get very deep into it. For the time being we will set a false path between both clock domains and report violators.
 
-Is the report clean of violations now? If it isn't, did you make sure to set the false in both directions?
+Is the report clean of violations now? If it isn't, did you make sure to set the false path in both directions?
 
 #### Complete STA script
 
 Now we will see an example of a complete STA flow. Open the scripts/sta.tcl script and read it through. Notice how it executes some scripts we already saw, and how it calls up the gen_reports.tcl script to produce reports as files that we can review once the Tempus session is complete.
 
-Run the sta.tcl script and examine the different files it produces. You already produced many of those reports already, but now they are in a handy format to review and analyze.
+Run the sta.tcl script and examine the different files it produces. You already produced many of those reports already, but now they are in a handy format to review and analyze after Tempus completed the run.
 
 Things to do
  
 - Try different lib?
-
-## Database access commands - get_db, set_db
-
-### `get_db` Command
-The `get_db` command is used to retrieve information from the database. It allows you to query various attributes and objects within your design.
-
-#### Syntax
-```tcl
-get_db <object_type> <attribute>
-```
-
-#### Examples
-1. **Retrieve the name of the current design:**
-   ```tcl
-   get_db current_design.name
-   ```
-   This command fetches the name of the current design.
-
-2. **Get the list of all instances in the design:**
-   ```tcl
-   get_db instances
-   ```
-   This command returns a list of all instances in the current design.
-
-3. **Fetch the timing path of a specific instance:**
-   ```tcl
-   get_db instances.my_instance.timing_path
-   ```
-   This command retrieves the timing path for the instance named `my_instance`.
-
-### `set_db` Command
-The `set_db` command is used to modify or set values in the database. It allows you to change attributes of objects within your design.
-
-#### Syntax
-```tcl
-set_db <object_type> <attribute> <value>
-```
-
-#### Examples
-1. **Set the name of the current design:**
-   ```tcl
-   set_db current_design.name "new_design_name"
-   ```
-   This command sets the name of the current design to `new_design_name`.
-
-2. **Change the value of a specific attribute for an instance:**
-   ```tcl
-   set_db instances.my_instance.attribute_name "new_value"
-   ```
-   This command changes the value of `attribute_name` for the instance `my_instance` to `new_value`.
-
-3. **Modify the timing constraint of a specific path:**
-   ```tcl
-   set_db timing_paths.path_1.constraint "new_constraint"
-   ```
-   This command sets a new timing constraint for `path_1`.
