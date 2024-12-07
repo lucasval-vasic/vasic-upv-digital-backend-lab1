@@ -4,7 +4,7 @@ set BLOCK_NAME "sync_fifo"
 # X-FAB 0.18um
 set LIB_PATH "/cadence_pdk/xfab/XKIT/x_all/cadence/XFAB_Digital_Power_RefKit-cadence/v1_3_1/pdk/xh018/diglibs/D_CELLS_JIHD/v4_1/liberty_LPMOS/v4_1_1/PVT_1_80V_range/D_CELLS_JIHD_LPMOS_slow_1_62V_125C.lib"
 # AMS 0.35um
-set LIB_PATH "/cadence_pdk/AMS/AMS_410_ISR15/liberty/c35_1.8V/c35_CORELIB_WC.lib"
+#set LIB_PATH "/cadence_pdk/AMS/AMS_410_ISR15/liberty/c35_1.8V/c35_CORELIB_WC.lib"
 
 set REPORT_DIR "../rep"
 
