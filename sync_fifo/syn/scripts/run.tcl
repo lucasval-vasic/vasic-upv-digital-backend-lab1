@@ -47,11 +47,24 @@ if {![file exists ${REPORTS_PATH}]} {
 ## Library setup
 ###############################################################
 
-#set_db / .init_lib_search_path  {. ../../../lib}
-#set_db / .init_hdl_search_path  {. ../in}
+## cell libs
 
-set_db / .library {../../../lib/slow.lib}
-set_db / .lef_library  {../../../lef/gsclib045_macro.lef ../../../lef/gsclib045_tech.lef}
+# X-FAB 0.18um
+set_db / .library { /cadence_pdk/xfab/XKIT/x_all/cadence/XFAB_Digital_Power_RefKit-cadence/v1_3_1/pdk/xh018/diglibs/D_CELLS_JIHD/v4_1/liberty_LPMOS/v4_1_1/PVT_1_80V_range/D_CELLS_JIHD_LPMOS_slow_1_62V_125C.lib }
+
+set_db / .lef_library  { \
+    /cadence_pdk/xfab/XKIT/x_all/cadence/XFAB_Digital_Power_RefKit-cadence/v1_3_1/pdk/xh018/cadence/v8_0/techLEF/v8_0_1_1/xh018_xx51_MET5_METMID.lef \
+    /cadence_pdk/xfab/XKIT/x_all/cadence/XFAB_Digital_Power_RefKit-cadence/v1_3_1/pdk/xh018/diglibs/D_CELLS_JIHD/v4_1/LEF/v4_1_1/xh018_D_CELLS_JIHD.lef \
+}
+
+# AMS 0.35um
+#set_db / .library { /cadence_pdk/AMS/AMS_410_ISR15/liberty/c35_1.8V/c35_CORELIB_WC.lib }
+
+#set_db / .lef_library  { \
+#    /cadence_pdk/AMS/AMS_410_ISR15/cds/HK_C35/LEF/c35b4/c35b4.lef \
+#    /cadence_pdk/AMS/AMS_410_ISR15/cds/HK_C35/LEF/c35b4/CORELIB.lef \
+#}
+
 ## Provide either cap_table_file or the qrc_tech_file
 ##set_db / .cap_table_file <file> 
 #set_db / .qrc_tech_file <file>
