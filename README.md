@@ -257,7 +257,7 @@ Now that our SDC file is complete we can try an additional constraint: setting a
 A useful tool to quickly assess the overall state of timing on a design is to print out the histogram report. We can do it in Tempus with the report_slack_histogram command. By default, report_slack_histogram only reports violating paths so we should use the -max_slack argument and set an arbitrarily large value like 10,000ns to report all paths:
 
 ```console
-report_slack_histogram -max_slack 10000
+> report_slack_histogram -max_slack 10000
 ```
 
 A useful argument is -step where we can set the step size between histogram bins to get a coarse or finely granulated report.
@@ -277,7 +277,7 @@ Another possible ECO change is to add a buffer. This is sometimes done to fix ho
 You will need to add a name for the newly added buffer. A good practice is to use a prefix like eco_ to clearly distinguish it from the buffers inserted automatically by implementation flow. This is the syntax for the AddRepeater command:
 
 ```console
-ecoAddRepeater -term reg_name/D -cell new_cell -name new_cell_name
+> ecoAddRepeater -term reg_name/D -cell new_cell -name new_cell_name
 ```
 
 Rerun the timing analysis and notice how the path delay and slack changed after the ECO command.
