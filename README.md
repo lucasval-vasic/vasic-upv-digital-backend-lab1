@@ -160,8 +160,11 @@ We will manually set those variables in order to run the load_design script. Typ
 
 ```console
 > set BLOCK_NAME "sync_fifo"
-> set LIB_PATH "../../../lib/slow.lib" # TODO change!!!!
+> set LIB_PATH "/cadence_pdk/xfab/XKIT/x_all/cadence/XFAB_Digital_Power_RefKit-cadence/v1_3_1/pdk/xh018/diglibs/D_CELLS_JIHD/v4_1/liberty_LPMOS/v4_1_1/PVT_1_80V_range/D_CELLS_JIHD_LPMOS_slow_1_62V_125C.lib"
 ```
+
+This will set the LIB_PATH variable used in load_design.script to the slow corner library for the D_CELLS JIHD library variant of the digital library for X-Fab 0.18um process. The design we will analyze was implemented in this process and library. 
+
 ### Design load
 
 Now we can source (ie execute) the load_design script:
@@ -305,12 +308,22 @@ The nature of the asynchronous FIFO design creates timing paths that cross the b
 
 Is the report clean of violations now? If it isn't, did you make sure to set the false path in both directions?
 
-#### Complete STA script
+### Complete STA script
 
 Now we will see an example of a complete STA flow. Open the scripts/sta.tcl script and read it through. Notice how it executes some scripts we already saw, and how it calls up the gen_reports.tcl script to produce reports as files that we can review once the Tempus session is complete.
 
 Run the sta.tcl script and examine the different files it produces. You already produced many of those reports already, but now they are in a handy format to review and analyze after Tempus completed the run.
 
-Things to do
- 
-- Try different lib?
+###  Alternate process
+
+up to now we have been processing designs implemented in the 0.18um process. We will now analyze the async_fifo design implemented in the AMS 0.35um process. 
+
+In order to use a new process we will essentially need to do 2 things:
+
+1. changes the library path to use the file /cadence_pdk/AMS/AMS_410_ISR15/liberty/c35_1.8V/c35_CORELIB_WC.lib. This characterizes the slow corner of the core cells for the 1.8V variant of CMOS process.
+
+2. changes the load_design command to load the netlist contained in sync_fifo/sta/in/async_fifo_0p35um.vg
+
+In order to compare to the previous run make a backup copy of the rep directory with an alternate name and run the sta.tcl script after applying these modifications.
+
+Now compare the rep/final_timing.rep report. Is the critical path the same or similar? Has the slack for this critical path changed or stayed the same?
