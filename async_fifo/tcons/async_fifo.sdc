@@ -22,6 +22,13 @@ set_driving_cell -lib_cell BUJIHDX4 -library D_CELLS_JIHD_LPMOS_fast_1_98V_m40C 
 set_driving_cell -lib_cell BUJIHDX4 -library D_CELLS_JIHD_LPMOS_fast_1_98V_m40C -pin Y wrclk
 set_driving_cell -lib_cell BUJIHDX4 -library D_CELLS_JIHD_LPMOS_fast_1_98V_m40C -pin Y rdclk
 
+set_input_transition 0.3 [get_ports data[*]]
+set_input_transition 0.3 [get_ports wrreq]
+set_input_transition 0.3 [get_ports rdreq]
+set_input_transition 0.3 [get_ports aclr]
+set_input_transition 0.3 [get_ports wrclk]
+set_input_transition 0.3 [get_ports rdclk]
+
 # outputs
 set_output_delay -clock [get_clocks rdclk] -add_delay 1.0 [get_ports q[*]]
 set_output_delay -clock [get_clocks wrclk] -add_delay 1.0 [get_ports wr_full]
