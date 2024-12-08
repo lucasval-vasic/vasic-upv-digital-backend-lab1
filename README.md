@@ -322,7 +322,7 @@ In order to use a new process we will essentially need to do 2 things:
 
 1. Change the library path to use the file /cadence_pdk/AMS/AMS_410_ISR15/liberty/c35_1.8V/c35_CORELIB_WC.lib. This characterizes the slow corner of the core cells for the 1.8V variant of CMOS process.
 
-2. Change the load_design command to load the netlist contained in sync_fifo/sta/in/async_fifo_0p35um.vg
+2. Change the load_design command to load the netlist contained in async_fifo/sta/in/async_fifo_0p35um.vg
 
 In order to compare to the previous run make a backup copy of the rep directory with an alternate name and run the sta.tcl script after applying these modifications.
 
