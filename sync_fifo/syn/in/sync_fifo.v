@@ -1,1 +1,0 @@
-../../rtl/sync_fifo.v
