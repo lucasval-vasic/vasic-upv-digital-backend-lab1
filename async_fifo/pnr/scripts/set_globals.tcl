@@ -9,7 +9,7 @@
 # Version 1.1
 #
 
-set BLOCK_NAME sync_fifo
+set BLOCK_NAME async_fifo
 
 set conf_qxconf_file {NULL}
 set conf_qxlib_file {NULL}
@@ -22,5 +22,5 @@ set init_lef_file {/cadence_pdk/xfab/XKIT/x_all/cadence/XFAB_Digital_Power_RefKi
 set init_mmmc_file {../scripts/mmmc.tcl}
 set init_pwr_net {VDD}
 set init_verilog {../in/${BLOCK_NAME}.vg}
-set init_verilog {../in/sync_fifo.vg}
+set init_verilog {../in/async_fifo.vg}
 set lsgOCPGainMult 1.000000
