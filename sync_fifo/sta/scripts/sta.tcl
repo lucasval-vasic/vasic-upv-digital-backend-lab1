@@ -9,16 +9,16 @@ set LIB_PATH "/cadence_pdk/xfab/XKIT/x_all/cadence/XFAB_Digital_Power_RefKit-cad
 set REPORT_DIR "../rep"
 
 ################################
-# Load netlist parasitics
+# Load netlist 
 ################################
 
 source ../scripts/load_design.tcl
 
 ################################
-# Load netlist parasitics
+# Load parasitics
 ################################
 
-#read_spef  ../../design/SPEF/corner_worst_CMAX.spef.gz
+read_spef  ../in/$BLOCK_NAME.spef
 
 ################################
 # Add constraints
