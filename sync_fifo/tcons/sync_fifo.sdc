@@ -19,6 +19,13 @@ set_driving_cell -lib_cell BUFX4 -library slow_1v0 -pin Y rdreq
 set_driving_cell -lib_cell BUFX4 -library slow_1v0 -pin Y aclr
 set_driving_cell -lib_cell BUFX4 -library slow_1v0 -pin Y clock
 
+set_input_transition 1.3 [get_ports data[*]]
+set_input_transition 1.3 [get_ports wrreq]
+set_input_transition 1.3 [get_ports rdreq]
+set_input_transition 1.3 [get_ports aclr]
+set_input_transition 1.3 [get_ports clock]
+
+
 # outputs
 set_output_delay -clock [get_clocks clk] -add_delay 1.0 [get_ports q[*]]
 set_output_delay -clock [get_clocks clk] -add_delay 1.0 [get_ports full]
