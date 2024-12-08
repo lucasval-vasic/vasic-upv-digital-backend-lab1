@@ -1,6 +1,6 @@
 # clocks
 create_clock -name wrclk -add -period 100.0 [get_ports wrclk]
-create_clock -name rdclk -add -period 100.0 [get_ports rsclk]
+create_clock -name rdclk -add -period 100.0 [get_ports rdclk]
 
 # inputs
 set_input_delay -clock [get_clocks wrclk] -add_delay 1.0 [get_ports data[*]]
@@ -15,12 +15,12 @@ set_load 0.1 [get_ports aclr]
 set_load 0.1 [get_ports wrclk]
 set_load 0.1 [get_ports rdclk]
 
-set_driving_cell -lib_cell BUFX4 -library slow_1v0 -pin Y data[*]
-set_driving_cell -lib_cell BUFX4 -library slow_1v0 -pin Y wrreq
-set_driving_cell -lib_cell BUFX4 -library slow_1v0 -pin Y rdreq
-set_driving_cell -lib_cell BUFX4 -library slow_1v0 -pin Y aclr
-set_driving_cell -lib_cell BUFX4 -library slow_1v0 -pin Y wrclk
-set_driving_cell -lib_cell BUFX4 -library slow_1v0 -pin Y rdclk
+set_driving_cell -lib_cell BUJIHDX4 -library D_CELLS_JIHD_LPMOS_fast_1_98V_m40C -pin Y data[*]
+set_driving_cell -lib_cell BUJIHDX4 -library D_CELLS_JIHD_LPMOS_fast_1_98V_m40C -pin Y wrreq
+set_driving_cell -lib_cell BUJIHDX4 -library D_CELLS_JIHD_LPMOS_fast_1_98V_m40C -pin Y rdreq
+set_driving_cell -lib_cell BUJIHDX4 -library D_CELLS_JIHD_LPMOS_fast_1_98V_m40C -pin Y aclr
+set_driving_cell -lib_cell BUJIHDX4 -library D_CELLS_JIHD_LPMOS_fast_1_98V_m40C -pin Y wrclk
+set_driving_cell -lib_cell BUJIHDX4 -library D_CELLS_JIHD_LPMOS_fast_1_98V_m40C -pin Y rdclk
 
 # outputs
 set_output_delay -clock [get_clocks rdclk] -add_delay 1.0 [get_ports q[*]]
