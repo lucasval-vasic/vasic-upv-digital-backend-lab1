@@ -6,7 +6,7 @@ puts "Hostname : [info hostname]"
 ## Preset global variables and attributes
 ##############################################################################
 
-set BLOCK_NAME sync_fifo
+set BLOCK_NAME async_fifo
 set GEN_EFF medium
 set MAP_OPT_EFF high
 set DATE [clock format [clock seconds] -format "%b%d-%T"] 
