@@ -9,12 +9,18 @@
 # Version 1.1
 #
 
+set BLOCK_NAME sync_fifo
+
 set conf_qxconf_file {NULL}
 set conf_qxlib_file {NULL}
 set defHierChar {/}
 set init_design_settop 0
 set init_gnd_net {VSS}
-set init_lef_file {../../../lef/gsclib045.fixed2.lef}
-set init_mmmc_file {../in/mmmc.tcl}
+set init_lef_file {/cadence_pdk/xfab/XKIT/x_all/cadence/XFAB_Digital_Power_RefKit-cadence/v1_3_1/pdk/xh018/cadence/v8_0/techLEF/v8_0_1_1/xh018_xx51_HD_MET5_METMID.lef \
+    /cadence_pdk/xfab/XKIT/x_all/cadence/XFAB_Digital_Power_RefKit-cadence/v1_3_1/pdk/xh018/diglibs/D_CELLS_JIHD/v4_1/LEF/v4_1_1/xh018_D_CELLS_JIHD.lef \
+}
+set init_mmmc_file {../scripts/mmmc.tcl}
 set init_pwr_net {VDD}
+set init_verilog {../in/${BLOCK_NAME}.vg}
+set init_verilog {../in/sync_fifo.vg}
 set lsgOCPGainMult 1.000000

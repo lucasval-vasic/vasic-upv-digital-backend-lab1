@@ -1,30 +1,33 @@
 ####################################################################################################
 ## Init
 ####################################################################################################
-set BLOCK_NAME sync_fifo
-
 source ../scripts/set_globals.tcl
 
 ####################################################################################################
 ## Load design
 ####################################################################################################
 
-#set init_verilog {../in/${BLOCK_NAME}.vg}
-set init_verilog {../in/sync_fifo.vg}
 init_design
 
 ####################################################################################################
 ## Load floorplan
 ####################################################################################################
 
-loadFPlan ../in/$BLOCK_NAME.power.fp
+#loadFPlan ../in/$BLOCK_NAME.power.fp
+
+floorPlan -siteOnly core_jihd \
+    -b      {   0.00   0.00 1430.00 1430.00 \
+                160.00 160.00 1270.00 1270.00 \
+                220.50 220.21 1209.46 1210.29  }\
+    -noSnapToGrid
+
 win
 
 ####################################################################################################
 ## Setup
 ####################################################################################################
 
-setDesignMode -process 45
+setDesignMode -process 180
 setMultiCpuUsage -localCpu 2
 
 setAnalysisMode -analysisType onChipVariation -cppr both
@@ -33,13 +36,14 @@ setDontUse *XL true
 setDontUse *X1 true
 
 setPlaceMode -place_global_place_io_pins true
+setPlaceMode -place_global_ignore_scan false
 
 ####################################################################################################
 ## Placement
 ####################################################################################################
 
 place_opt_design
-checkPlace leon.checkPlace
+checkPlace ../rep/$BLOCK_NAME.checkPlace
 saveDesign DBS/prects.enc
 
 ####################################################################################################
@@ -47,20 +51,17 @@ saveDesign DBS/prects.enc
 ####################################################################################################
 
 extractRC
-rcOut -spef leon.spef -rc_corner rc_worst
+rcOut -spef ../out/$BLOCK_NAME.spef -rc_corner rc_cworst
 
-setOptMode -opt_enable_podv2_clock_opt_flow true
-
-add_ndr -width {Metal1 0.12 Metal2 0.14 Metal3 0.14 Metal4 0.14 Metal5 0.14 Metal6 0.14 Metal7 0.14 Metal8 0.14 Metal9 0.14 } -spacing {Metal1 0.12 Metal2 0.14 Metal3 0.14 Metal4 0.14 Metal5 0.14 Metal6 0.14 Metal7 0.14 Metal8 0.14 Metal9 0.14 } -name 2w2s
-create_route_type -name clkroute -non_default_rule 2w2s -bottom_preferred_layer Metal5 -top_preferred_layer Metal6
-set_ccopt_property route_type clkroute -net_type trunk
-set_ccopt_property route_type clkroute -net_type leaf 
-set_ccopt_property buffer_cells {CLKBUFX8 CLKBUFX12}
-set_ccopt_property inverter_cells {CLKINVX8 CLKINVX12}
-set_ccopt_property clock_gating_cells TLATNTSCA*
+delete_ccopt_clock_tree_spec
 create_ccopt_clock_tree_spec -file ccopt.spec
+
 source ccopt.spec
-#clock_opt_design -cts
+
+set_db cts_update_clock_latency false
+set_db cts_inverter_cells {INJIHDX0 INJIHDX1 INJIHDX3 INJIHDX4 INJIHDX6 INJIHDX8 INJIHDX12}
+set_db cts_buffer_cells {BUJIHDX0 BUJIHDX1 BUJIHDX3 BUJIHDX4 BUJIHDX6 BUJIHDX8 BUJIHDX12}
+
 ccopt_design -cts
 saveDesign DBS/cts.enc
 
