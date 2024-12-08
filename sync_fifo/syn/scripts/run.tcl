@@ -71,6 +71,8 @@ set_db / .lef_library  { \
 
 ##set_db / .lp_insert_clock_gating true 
 
+set_db use_scan_seqs_for_non_dft false
+
 ####################################################################
 ## Load Design
 ####################################################################
