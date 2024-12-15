@@ -169,7 +169,7 @@ This will set the LIB_PATH variable used in load_design.script to the slow corne
 
 Now we can source (ie execute) the load_design script:
 ```console
-> source scripts/load_design.tcl
+> source ../scripts/load_design.tcl
 ```
 
 After a few screens of text we will get the Tempus prompt again. Seeing the design cell count report that will confirm us that the design and libraries were properly loaded.
