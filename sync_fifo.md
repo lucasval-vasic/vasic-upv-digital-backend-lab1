@@ -9,7 +9,7 @@ The Synchronous FIFO (First-In-First-Out) module is designed to manage data flow
 
 
 ### Code
-The code for the FIFO may be found at TODO
+The code for the FIFO may be found [here](sync_fifo/rtl/sync_fifo.v).
 
 ### Features
 - Width: Configurable data width (default: 32 bits)
