@@ -2,9 +2,28 @@
 
 ## Introduction
 
-On this lab we will get familiar with the digital IC implementation flow by looking at the Static Timing Analysis of the Cadence flow: Tempus.
+In this lab we will become familiar with the digital IC implementation flow by exploring Static Timing Analysis (STA) using the Cadence tool Tempus.
 
-During the lab you will get familiar with the TCL language used to create scripts, and then analyze the timing characteristics of a couple of digital blocks.
+Throughout the lab, you will also gain experience with the TCL scripting language, which is used to create automation scripts, and then apply it to analyze the timing characteristics of several digital blocks.
+
+## Lab evaluation
+
+You are required to produce a lab report that documents the actions and experiments described in this guide. Present the results of your experiments using text, screenshots, or any other appropriate media.
+
+## Evaluation rubric
+
+The following breakdown shows how each section of this lab contributes to the overall marks:
+
+- Initial timing report: 1 point
+- Timing constraints: 1 point
+- Advanced timing report: 1 point
+- Violations: 1 point
+- Histogram: 1 point
+- Change cell ECO: 1 point
+- Add repeater ECO: 1 point
+- Multi-clock design: 1 point
+- Complete STA script: 1 point
+- Alternate process: 1 point
 
 ## TCL
 
