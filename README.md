@@ -333,6 +333,46 @@ Now we will see an example of a complete STA flow. Open the scripts/sta.tcl scri
 
 Run the sta.tcl script and examine the different files it produces. You already produced many of those reports already, but now they are in a handy format to review and analyze after Tempus completed the run.
 
+#### Reports produced
+
+This is a breakdown of the most important reports produced by the STA script:
+
+- check_design.rpt
+Reports checks related to timing setup integrity.
+
+- check_timing.rpt
+Reports consistency and completeness checks on the timing constraints specified for a design
+
+- clocks.rpt
+Reports clocks defined on the design
+
+- case_analysis.rpt
+Reports set_case_analysis configuration constraints
+
+- allviol.rpt
+Reports all timing violations
+
+- analysis_summary.rpt
+High level summary of timing analysis. Shows Worst Negative Slack (WNS) and Total Negative Slack (TNS)
+
+- setup_1.rpt
+Reports the path with worst slack for setup timing check. Only endpoint and slack are reported.
+
+- hold_1.rpt
+Reports the path with worst slack for hold timing check. Only endpoint and slack are reported.
+
+- worst_max_path.rpt
+Reports 50 paths with worst slack for setup timing check. Path are reported in detail.
+
+- worst_min_path.rpt
+Reports 50 paths with worst slack for hold timing. Path are reported in detail.
+
+- setup_100.rpt.gz
+Reports 100 paths with worst slack for setup timing check. Path are reported in detail. File is compressed.
+
+- hold_100.rpt.gz
+Reports 100 paths with worst slack for hold timing. Path are reported in detail. File is compressed.
+
 ###  Alternate process
 
 Up to now we have been processing designs implemented in the X-Fab 0.18um process. We will now analyze the async_fifo design implemented in the AMS 0.35um process. 
